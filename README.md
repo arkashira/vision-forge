@@ -1,2 +1,5 @@
-# vision-forge
-axentx product · A computer vision platform that provides efficient and accurate object detection, image processing, and tracking capabilities for developers and researchers.
+# Vision Forge
+A simple Python API for loading models and running inference.
+
+## Usage
+Load a model from a file:
