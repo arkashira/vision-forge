@@ -4,8 +4,8 @@ build-backend = "poetry.masonry.api"
 
 [tool.poetry]
 name = "vision-forge"
-version = "0.1.0"
-description = "Vision Forge CLI"
+version = "1.0.0"
+description = ""
 
 [tool.poetry.dependencies]
 python = "^3.8"

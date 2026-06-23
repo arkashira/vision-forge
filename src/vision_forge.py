@@ -1,41 +1,22 @@
 import json
+import argparse
 from dataclasses import dataclass
-from argparse import ArgumentParser
 
 @dataclass
-class Model:
-    version: str
-    weights: str
+class APIResponse:
+    status: int
+    message: str
 
-class VisionForge:
-    def __init__(self):
-        self.models = {}
-        self.default_model = None
-
-    def load_model(self, path):
-        with open(path, 'r') as f:
-            model_data = json.load(f)
-            model = Model(version=model_data['version'], weights=model_data['weights'])
-            self.models[model.version] = model
-            if self.default_model is None:
-                self.default_model = model
-
-    def infer(self, image):
-        if self.default_model is None:
-            raise ValueError("No model loaded")
-        # Simulate inference using the default model
-        return f"Inferred using {self.default_model.version}"
+def get_api_response(status: int, message: str) -> APIResponse:
+    return APIResponse(status, message)
 
 def main():
-    parser = ArgumentParser(description="Vision Forge CLI")
-    parser.add_argument("--load-model", help="Load a model from a file")
-    parser.add_argument("--infer", help="Run inference on an image")
+    parser = argparse.ArgumentParser(description='Vision Forge API')
+    parser.add_argument('--status', type=int, help='Status code', required=True)
+    parser.add_argument('--message', type=str, help='Message', required=True)
     args = parser.parse_args()
-    vision_forge = VisionForge()
-    if args.load_model:
-        vision_forge.load_model(args.load_model)
-    if args.infer:
-        print(vision_forge.infer(args.infer))
+    response = get_api_response(args.status, args.message)
+    print(json.dumps(response.__dict__))
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

@@ -1,38 +1,31 @@
 import pytest
-from vision_forge import VisionForge, Model
+import json
+import sys
+import io
+from src.vision_forge import get_api_response, APIResponse, main
 
-def test_load_model():
-    vision_forge = VisionForge()
-    model_data = '{"version": "1.0", "weights": "model_weights"}'
-    with open("model.json", "w") as f:
-        f.write(model_data)
-    vision_forge.load_model("model.json")
-    assert len(vision_forge.models) == 1
-    assert vision_forge.default_model.version == "1.0"
+def test_get_api_response_happy_path():
+    response = get_api_response(200, 'OK')
+    assert response.status == 200
+    assert response.message == 'OK'
 
-def test_infer():
-    vision_forge = VisionForge()
-    model_data = '{"version": "1.0", "weights": "model_weights"}'
-    with open("model.json", "w") as f:
-        f.write(model_data)
-    vision_forge.load_model("model.json")
-    result = vision_forge.infer("image.jpg")
-    assert result == "Inferred using 1.0"
+def test_get_api_response_edge_case():
+    response = get_api_response(404, 'Not Found')
+    assert response.status == 404
+    assert response.message == 'Not Found'
 
-def test_infer_no_model():
-    vision_forge = VisionForge()
-    with pytest.raises(ValueError):
-        vision_forge.infer("image.jpg")
-
-def test_load_model_versioning():
-    vision_forge = VisionForge()
-    model_data_v1 = '{"version": "1.0", "weights": "model_weights_v1"}'
-    model_data_v2 = '{"version": "2.0", "weights": "model_weights_v2"}'
-    with open("model_v1.json", "w") as f:
-        f.write(model_data_v1)
-    with open("model_v2.json", "w") as f:
-        f.write(model_data_v2)
-    vision_forge.load_model("model_v1.json")
-    vision_forge.load_model("model_v2.json")
-    assert len(vision_forge.models) == 2
-    assert vision_forge.default_model.version == "1.0"
+def test_main():
+    import sys
+    import io
+    import argparse
+    # Test with valid arguments
+    capturedOutput = io.StringIO()
+    sys.stdout = capturedOutput
+    sys.argv = ['vision_forge', '--status', '200', '--message', 'OK']
+    main()
+    sys.stdout = sys.__stdout__
+    assert json.loads(capturedOutput.getvalue()) == {'status': 200, 'message': 'OK'}
+    # Test with invalid arguments
+    with pytest.raises(SystemExit):
+        sys.argv = ['vision_forge']
+        main()

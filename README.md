@@ -1,5 +1,3 @@
-# Vision Forge
-A simple Python API for loading models and running inference.
-
-## Usage
-Load a model from a file:
+# Vision Forge API
+## Quick Start
+To test the API, run the following command:
